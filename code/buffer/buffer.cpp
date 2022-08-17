@@ -1,3 +1,9 @@
+/*
+ * @Author: paoluo
+ * @Date: 2022-03-09 22:38:23
+ * @LastEditors: paoluo
+ * @LastEditTime: 2022-08-17 17:43:06
+ */
 #include "buffer.h"
 
 Buffer::Buffer(int initBuffSize) : buffer_(initBuffSize), readPos_(0), writePos_(0) {}
