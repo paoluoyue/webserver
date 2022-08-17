@@ -16,14 +16,17 @@ WebServer::WebServer(
             port_(port), openLinger_(OptLinger), timeoutMS_(timeoutMS), isClose_(false),
             timer_(new HeapTimer()), threadpool_(new ThreadPool(threadNum)), epoller_(new Epoller())
     {
-    srcDir_ = getcwd(nullptr, 256);
-    assert(srcDir_);
-    strncat(srcDir_, "/resources/", 16);
+    srcDir_ = getcwd(nullptr, 256);         // 获取当前的工作路径
+    assert(srcDir_);                        // 断言
+    strncat(srcDir_, "/resources/", 16);    // 路径拼接
+
     HttpConn::userCount = 0;
     HttpConn::srcDir = srcDir_;
     SqlConnPool::Instance()->Init("localhost", sqlPort, sqlUser, sqlPwd, dbName, connPoolNum);
 
+    // 初始化事件模式
     InitEventMode_(trigMode);
+
     if(!InitSocket_()) { isClose_ = true;}
 
     if(openLog) {
@@ -49,6 +52,7 @@ WebServer::~WebServer() {
     SqlConnPool::Instance()->ClosePool();
 }
 
+// 初始化监听的文件描述符和连接的文件描述符的事件模式
 void WebServer::InitEventMode_(int trigMode) {
     listenEvent_ = EPOLLRDHUP;
     connEvent_ = EPOLLONESHOT | EPOLLRDHUP;
@@ -135,7 +139,7 @@ void WebServer::AddClient_(int fd, sockaddr_in addr) {
 }
 
 void WebServer::DealListen_() {
-    struct sockaddr_in addr;
+    struct sockaddr_in addr;    // 保存连接的客户端的信息
     socklen_t len = sizeof(addr);
     do {
         int fd = accept(listenFd_, (struct sockaddr *)&addr, &len);
@@ -146,7 +150,7 @@ void WebServer::DealListen_() {
             return;
         }
         AddClient_(fd, addr);
-    } while(listenEvent_ & EPOLLET);
+    } while(listenEvent_ & EPOLLET);    // 利用do while循环取EPOLLET模式下的文件描述符
 }
 
 void WebServer::DealRead_(HttpConn* client) {
@@ -272,7 +276,7 @@ bool WebServer::InitSocket_() {
     LOG_INFO("Server port:%d", port_);
     return true;
 }
-
+// 设置文件描述符非阻塞
 int WebServer::SetFdNonblock(int fd) {
     assert(fd > 0);
     return fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0) | O_NONBLOCK);

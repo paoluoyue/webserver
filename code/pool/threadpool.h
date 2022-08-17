@@ -58,13 +58,14 @@ public:
     }
 
 private:
+    // 结构体
     struct Pool {
-        std::mutex mtx;
-        std::condition_variable cond;
-        bool isClosed;
-        std::queue<std::function<void()>> tasks;
+        std::mutex mtx;                 // 互斥锁
+        std::condition_variable cond;   // 条件变量
+    bool isClosed;                      // 是否关闭
+        std::queue<std::function<void()>> tasks;    // 队列（保存的任务）
     };
-    std::shared_ptr<Pool> pool_;
+    std::shared_ptr<Pool> pool_;        // 池子
 };
 
 
