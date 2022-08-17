@@ -1,8 +1,10 @@
 /*
- * @Author       : mark
- * @Date         : 2020-06-15
- * @copyleft Apache 2.0
- */ 
+ * @Author: paoluo
+ * @Date: 2022-03-09 22:38:23
+ * @LastEditors: paoluo
+ * @LastEditTime: 2022-08-17 17:43:38
+ */
+
 #include "httpconn.h"
 using namespace std;
 
